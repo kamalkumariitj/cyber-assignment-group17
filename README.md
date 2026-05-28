@@ -104,7 +104,7 @@ docker compose restart
 
 ## Credits
 
-Assignment Group 18
+Assignment Group 17
 
 - Chaurasia Kamalkumar Lallanprasad - G25AIT2028
 - Anurag Vishwakarma - G25AIT2017
