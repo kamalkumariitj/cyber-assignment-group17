@@ -1,0 +1,17 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./demo3/web:/app:Z
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
