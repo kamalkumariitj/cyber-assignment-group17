@@ -2,6 +2,17 @@
 
 A small educational cybersecurity project that demonstrates how a fixed-size buffer can behave when it receives normal input, boundary input, and oversized input. The Flask web app shows the behavior in a browser, the Python script in `demo3/exploit/` drives the web demo from the command line, and the C++ program in `demo1/` shows a classic stack buffer overflow example.
 
+## Credits
+
+Assignment Group 17
+
+- Chaurasia Kamalkumar Lallanprasad - G25AIT2028
+- Anurag Vishwakarma - G25AIT2017
+- Palagani Sai Chaitanya - G25AIT2143
+- Niketh Varma Tirumalaraju - G25AIT2142
+- Nalla Sai Revanth - G25AIT2141
+- Anmol Pandey - G25AIT2013
+
 ## What It Demonstrates
 
 - Normal request handling
@@ -101,17 +112,6 @@ The Flask app in `demo3/web/app.py` uses a small fixed buffer and intentionally 
 ```bash
 docker compose restart
 ```
-
-## Credits
-
-Assignment Group 17
-
-- Chaurasia Kamalkumar Lallanprasad - G25AIT2028
-- Anurag Vishwakarma - G25AIT2017
-- Palagani Sai Chaitanya - G25AIT2143
-- Niketh Varma Tirumalaraju - G25AIT2142
-- Nalla Sai Revanth - G25AIT2141
-- Anmol Pandey - G25AIT2013
 
 ## License
 
