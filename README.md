@@ -34,10 +34,10 @@ This project is intended for a controlled classroom or lab environment only.
 │   └── demo.cpp               # C++ safe-vs-unsafe buffer demo
 ├── demo2/
 │   ├── src/
-│   │   ├── 01_basic_overflow.c          # stack variable overwrite
-│   │   └── 02_return_address_overwrite.c  # function pointer hijack
+│   │   ├── 01_basic_overflow.c          #C stack variable overwrite
+│   │   └── 02_return_address_overwrite.c  #C function pointer hijack
 │   └── scripts/
-│       └── build_and_run.sh   # compiles and runs both C demos
+│       └── build_and_run.sh   # compiles and runs both C demo2
 └── demo3/
     ├── exploit/
     │   └── exploit.py         # drives the web demo from the command line
