@@ -1,6 +1,6 @@
 # Buffer Overflow Lab
 
-A small educational cybersecurity project that demonstrates how a fixed-size buffer can behave when it receives normal input, boundary input, and oversized input. The Flask web app shows the behavior in a browser, the Python script in `demo3/exploit/` drives the web demo from the command line, and the C++ program in `demo1/` shows a classic stack buffer overflow example.
+An educational cybersecurity project demonstrating classic buffer overflow vulnerabilities — stack variable overwrites, function pointer hijacking, and web-layer overflow behaviour — in a controlled classroom environment.
 
 ## Credits
 
@@ -15,11 +15,11 @@ Assignment Group 17
 
 ## What It Demonstrates
 
-- Normal request handling
-- Boundary conditions around a fixed-size buffer
-- Overflow-style behavior when input exceeds the buffer length
-- Service instability / denial-of-service style behavior under aggressive input and request load
-- Safe stack overflow presentation in a small C++ demo
+| Demo | Language | Topic |
+|------|----------|-------|
+| demo1 | C++ | Safe vs unsafe buffer copy (`strcpy` / `strncpy`) |
+| demo2 | C | Stack variable overwrite + function pointer hijack via overflow |
+| demo3 | Python / Flask | Web-layer overflow simulation, service crash & DoS behaviour |
 
 This project is intended for a controlled classroom or lab environment only.
 
@@ -31,73 +31,99 @@ This project is intended for a controlled classroom or lab environment only.
 ├── docker-compose.yml
 ├── requirements.txt
 ├── demo1/
-│   └── demo.cpp
+│   └── demo.cpp               # C++ safe-vs-unsafe buffer demo
+├── demo2/
+│   ├── src/
+│   │   ├── 01_basic_overflow.c          # stack variable overwrite
+│   │   └── 02_return_address_overwrite.c  # function pointer hijack
+│   └── scripts/
+│       └── build_and_run.sh   # compiles and runs both C demos
 └── demo3/
     ├── exploit/
-    │   └── exploit.py
+    │   └── exploit.py         # drives the web demo from the command line
     └── web/
-        ├── app.py
-        ├── Dockerfile
-        ├── requirements.txt
+        ├── app.py             # Flask app with intentional overflow behaviour
         └── templates/
             └── index.html
 ```
 
 ## Requirements
 
-- Docker and Docker Compose
-- Python 3 if you want to run the exploit script locally
+- Docker and Docker Compose (recommended)
+- `clang++` and `gcc` for running demos locally without Docker
+- Python 3 for the exploit script or local Flask run
 
-## Run the Web App
+---
 
-From the project root:
+## Run Everything via Docker (recommended)
 
-```bash
-docker compose up --build -d
-```
-
-This starts the Flask application on:
-
-```text
-http://localhost:5000
-```
-
-To stop it:
+Build and run all demos inside a single container:
 
 ```bash
-docker compose down
+docker build -t cyber-demo .
+docker run -p 5000:5000 cyber-demo
 ```
 
-## Run the Web Demo Script
+On startup the container will:
+1. Run **demo1** — safe and overflow cases for the C++ buffer demo
+2. Run **demo2** — builds and runs the stack variable overwrite and function pointer hijack demos
+3. Start the **demo3** Flask web app on `http://localhost:5000`
 
-First make sure the web app is running, then run:
+To stop the container press `Ctrl+C`.
+
+---
+
+## Run Individually (local)
+
+### Demo 1 — C++ Buffer Overflow
+
+```bash
+clang++ demo1/demo.cpp -o demo1/demo
+
+./demo1/demo "HELLO"                          # run both safe and vulnerable cases
+./demo1/demo "HELLO" --safe-only              # safe demo only
+./demo1/demo "AAAAAAAAAAAAAAAAAAAA" --vuln-only  # overflow (will crash — expected)
+```
+
+### Demo 2 — C Stack Overflow & Function Pointer Hijack
+
+```bash
+bash demo2/scripts/build_and_run.sh
+```
+
+This compiles both C sources and runs:
+- **Test A** — safe 4-byte input into an 8-byte buffer
+- **Test B** — 20-byte overflow that overwrites `is_admin`
+- **Function pointer hijack** — overflow redirects execution to `secret_function()`
+
+### Demo 3 — Flask Web App
+
+Start the app:
+
+```bash
+docker compose up --build -d   # via Docker Compose
+# or locally:
+pip install -r requirements.txt
+python3 demo3/web/app.py
+```
+
+Web app runs on `http://localhost:5000`.
+
+Then run the exploit script (app must be running):
 
 ```bash
 python3 demo3/exploit/exploit.py
 ```
 
-The script has two phases:
+The script sends:
+1. Normal, boundary, and oversized inputs to show overflow behaviour
+2. Concurrent requests to demonstrate service instability / DoS
 
-1. It sends normal, boundary, and oversized inputs.
-2. It performs heavier request load to demonstrate service instability.
-
-## Run the C++ Demo
-
-The stack overflow example lives in `demo1/demo.cpp`. Compile it with:
+To stop Docker Compose:
 
 ```bash
-clang++ demo1/demo.cpp -o demo1/demo
+docker compose down
 ```
-
-Then run one of these examples:
-
-```bash
-./demo1/demo "HELLO"
-./demo1/demo "HELLO" --safe-only
-./demo1/demo "HELLO" --secret
-```
-
-The `--secret` option is a safe presentation shortcut that calls the hidden demo function directly without relying on undefined behavior.
 
 ## Web App Details
 
@@ -112,7 +138,3 @@ The Flask app in `demo3/web/app.py` uses a small fixed buffer and intentionally 
 ```bash
 docker compose restart
 ```
-
-## License
-
-For academic use in the course assignment context.
