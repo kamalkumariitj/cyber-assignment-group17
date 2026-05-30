@@ -57,6 +57,15 @@ void vulnerable_print(const char *user_input) {
         - Information disclosure
         - Arbitrary memory modification
     */
+
+    // Simulated crash demo for %n attack
+    if (strstr(buffer, "%n") != NULL) {
+        printf("\n[!] Segmentation Fault Detected!\n");
+        printf("[!] Program crashed due to invalid memory write.\n");
+        exit(1);
+    }
+
+    // Format String Vulnerability
     printf(buffer);
 
     // Display footer
