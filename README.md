@@ -1,4 +1,4 @@
-# Buffer Overflow Lab
+<img width="389" height="41" alt="image" src="https://github.com/user-attachments/assets/49ca5e12-726a-4126-b1df-b8938e75c03e" /># Buffer Overflow Lab
 
 An educational cybersecurity project demonstrating classic buffer overflow vulnerabilities — stack variable overwrites, function pointer hijacking, and web-layer overflow behaviour — in a controlled classroom environment.
 
@@ -8,7 +8,7 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 
 - **Chaurasia Kamalkumar Lallanprasad** — G25AIT2028
   - Understanding buffer overflow & why it happens
-  - Basic understanding — Demo 1
+  - Exposure of unwanted data - Demo 1
   - Server attack DoS — Demo 4
 
 - **Anurag Vishwakarma** — G25AIT2017
