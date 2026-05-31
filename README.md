@@ -6,12 +6,35 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 
 Assignment Group 17
 
-- Chaurasia Kamalkumar Lallanprasad - G25AIT2028
-- Anurag Vishwakarma - G25AIT2017
-- Palagani Sai Chaitanya - G25AIT2143
-- Niketh Varma Tirumalaraju - G25AIT2142
-- Nalla Sai Revanth - G25AIT2141
-- Anmol Pandey - G25AIT2013
+- Chaurasia Kamalkumar Lallanprasad - G25AIT2028 -
+Understanding buffer overflow
+Why it happens?
+Basic understanding - Demo 1.0 
+Server attack DoS - Demo 4.0
+
+- Anurag Vishwakarma - G25AIT2017 -
+Understanding buffer overflow
+Why it happens?
+Basic understanding - Demo 1.0 
+Server attack DoS - Demo 4.0
+
+- Anmol Pandey - G25AIT2013 -
+Remote code execution - Demo 3.0
+
+- Palagani Sai Chaitanya - G25AIT2143 -
+Prevention/Countermeasures
+Case Study, Heartbleed Bug (OpenSSL)(2014)
+
+
+- Niketh Varma Tirumalaraju - G25AIT2142 -
+Case Study- The Morris Worm (1998)
+
+- Nalla Sai Revanth - G25AIT2141 -
+Case Study, WannaCry Ransomeware(2017)
+
+
+
+
 
 ## What It Demonstrates
 
@@ -40,18 +63,19 @@ This project is intended for a controlled classroom or lab environment only.
 │   ├── scripts/
 │   │   └── build_and_run.sh   # compiles and runs both C demo2
 │   └── gdb_demo1_stack_overwrite.gdb    # GDB script: live byte-by-byte overflow walkthrough
-├── demo3/
+└── demo3/
+│   ├── server.c               # vulnerable TCP server (memcpy with no bounds check)
+│   ├── exploit.py             # builds and sends the 517-byte overflow payload
+│    ├── Makefile               # builds server with stack protector and NX disabled
+│    └── DEMO4_README.md        # standalone setup guide for the SEED Labs VM
+├── demo4/
 │   ├── exploit/
 │   │   └── exploit.py         # drives the web demo from the command line
 │   └── web/
 │       ├── app.py             # Flask app with intentional overflow behaviour
 │       └── templates/
 │           └── index.html
-└── demo4/
-    ├── server.c               # vulnerable TCP server (memcpy with no bounds check)
-    ├── exploit.py             # builds and sends the 517-byte overflow payload
-    ├── Makefile               # builds server with stack protector and NX disabled
-    └── DEMO4_README.md        # standalone setup guide for the SEED Labs VM
+
 ```
 
 ## Requirements
@@ -93,7 +117,7 @@ clang++ demo1/demo.cpp -o demo1/demo
 ./demo1/demo "HELLO" --safe-only              # safe demo only
 ./demo1/demo "AAAAAAAAAAAAAAAAAAAA" --vuln-only  # overflow (will crash — expected)
 ```
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ### Demo 2 — C Stack Overflow & Function Pointer Hijack
 
 ```bash
@@ -138,7 +162,94 @@ The script does everything automatically and prints labels so you know what you'
 
 6. **GDB as the attacker** — the last section  it resets `is_admin` = 0 and then sets it to `0xDEADBEEF` directly, no overflow needed. The point is that once someone has this level of access to a process, the overflow is easy to place.
 
-### Demo 3 — Flask Web App
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### Demo 3 — 
+# Demo 3 — Buffer Overflow Attack on a TCP Server
+
+**Contributed by:** Anmol Pandey (G25AIT2013)
+**Group:** 17
+**Role:** Research & Theory + Server Demo
+
+---
+
+## What this demo shows
+
+A vulnerable TCP server written in C that has **no bounds checking** on the data it receives from clients. An attacker sends a crafted 517-byte payload that:
+
+1. Overflows a 100-byte stack buffer
+2. Overwrites the saved Return Address on the stack
+3. Redirects execution into injected shellcode
+4. Opens a shell on the server
+
+---
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `server.c` | Vulnerable TCP server (intentionally unsafe for demo) |
+| `exploit.py` | Python script that builds and sends the payload |
+| `Makefile` | Builds the server with protections disabled |
+| `README.md` | Full setup and run instructions |
+
+---
+
+## How to run (inside SEED Labs Ubuntu VM)
+
+### Step 1 — Disable ASLR
+```bash
+sudo sysctl -w kernel.randomize_va_space=0
+```
+
+### Step 2 — Build the server
+```bash
+make
+```
+
+### Step 3 — Run the server (Terminal 1)
+```bash
+./server
+```
+Note the buffer address hint printed on screen.
+
+### Step 4 — Run the exploit (Terminal 2)
+```bash
+python3 exploit.py 0xffffd200
+```
+(Replace address with the one printed by the server + ~0x60 offset)
+
+### Step 5 — Verify
+Back in Terminal 1, type:
+```bash
+id
+```
+If you see `uid=1000(seed) ...` — the attack succeeded.
+
+---
+
+## Key vulnerability in server.c
+
+```c
+void vulnerable_function(char *input, int len) {
+    char buffer[100];
+    memcpy(buffer, input, len);   // NO BOUNDS CHECK — this is the bug
+}
+```
+
+`memcpy` copies exactly `len` bytes with no check that `len <= 100`. When the attacker sends 517 bytes, the extra 417 bytes overflow past the buffer and overwrite the Return Address.
+
+---
+
+## Environment
+
+- Ubuntu 20.04 32-bit (SEED Labs VM)
+- gcc with stack protector and NX disabled (educational demo only)
+- Python 3
+
+> ⚠️ For educational use only. Run inside an isolated VM.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### Demo 4 — Flask Web App
 
 Start the app:
 
@@ -146,7 +257,7 @@ Start the app:
 docker compose up --build -d   # via Docker Compose
 # or locally:
 pip install -r requirements.txt
-python3 demo3/web/app.py
+python3 demo4/web/app.py
 ```
 
 Web app runs on `http://localhost:5000`.
@@ -154,7 +265,7 @@ Web app runs on `http://localhost:5000`.
 Then run the exploit script (app must be running):
 
 ```bash
-python3 demo3/exploit/exploit.py
+python3 demo4/exploit/exploit.py
 ```
 
 The script sends:
@@ -169,7 +280,7 @@ docker compose down
 
 ## Web App Details
 
-The Flask app in `demo3/web/app.py` uses a small fixed buffer and intentionally unsafe demo logic to simulate overflow behavior. It also includes resource pressure and crash conditions so the effects are easier to observe in a short classroom demo.
+The Flask app in `demo4/web/app.py` uses a small fixed buffer and intentionally unsafe demo logic to simulate overflow behavior. It also includes resource pressure and crash conditions so the effects are easier to observe in a short classroom demo.
 
 ## Notes
 
