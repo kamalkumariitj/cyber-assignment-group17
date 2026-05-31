@@ -267,8 +267,8 @@ python3 demo4/exploit/exploit.py
 OR
 
 Use application  `http://localhost:5000`, and enter different type of input like 
-1. "HELLO" - Within limit
-2. "HELLOWORLD" - Extra char - Overflow scenario
+1. "HELLOWORLD" - Within limit
+2. "HELLOWORLDOVERFLOW" - Extra char - Overflow scenario
 3. "HELLOWORLDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" - DoS Attack & Server Crash
    
 
