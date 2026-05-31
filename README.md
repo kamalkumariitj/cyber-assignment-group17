@@ -7,7 +7,6 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 **Assignment Group 17**
 
 - **Chaurasia Kamalkumar Lallanprasad** — G25AIT2028
-  - Understanding buffer overflow & why it happens
   - Exposure of unwanted data - Demo 1
   - Server attack DoS — Demo 4
 
@@ -19,18 +18,6 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 
 - **Anmol Pandey** — G25AIT2013
   - Remote code execution — Demo 3
-
-- **Palagani Sai Chaitanya** — G25AIT2143
-  - Prevention / Countermeasures
-  - Case Study: Heartbleed Bug (OpenSSL, 2014)
-
-- **Niketh Varma Tirumalaraju** — G25AIT2142
-  - Case Study: The Morris Worm (1998)
-
-- **Nalla Sai Revanth** — G25AIT2141
-  - Case Study: WannaCry Ransomware (2017)
-
-
 
 ## What It Demonstrates
 
