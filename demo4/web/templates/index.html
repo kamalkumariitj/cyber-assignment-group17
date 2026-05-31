@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buffer Overflow: Server Crash DoS Example</title>
+    <style>
+        :root {
+            --bg-main: #0f1320;
+            --bg-panel: #151b2c;
+            --bg-card: #1b2338;
+            --text-main: #edf2ff;
+            --text-muted: #aeb9d3;
+            --accent-yellow: #f3ee13;
+            --accent-gray: #7f828b;
+            --accent-orange: #f49b00;
+            --accent-red: #ff3b30;
+            --accent-violet: #6b35f5;
+            --accent-teal: #0a7778;
+            --border-soft: #2c3653;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, #1e2640 0%, var(--bg-main) 55%, #090d19 100%);
+            color: var(--text-main);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #131a2d 0%, #1b2440 100%);
+            color: var(--accent-yellow);
+            text-align: center;
+            padding: 1.35rem 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            letter-spacing: 0.4px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: clamp(1.2rem, 2.8vw, 1.8rem);
+        }
+
+        .container {
+            max-width: 960px;
+            width: min(960px, calc(100% - 2rem));
+            margin: 1rem auto 0.85rem;
+            padding: 1.15rem 1.15rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%), var(--bg-panel);
+            border-radius: 14px;
+            box-shadow: 0 14px 36px rgba(3, 6, 14, 0.55);
+            border: 1px solid var(--border-soft);
+            flex: 1 1 auto;
+        }
+
+        .warning {
+            color: #ffe0db;
+            background: linear-gradient(90deg, rgba(244, 155, 0, 0.12) 0%, rgba(255, 59, 48, 0.12) 100%);
+            border: 1px solid rgba(255, 59, 48, 0.45);
+            padding: 0.95rem;
+            border-radius: 10px;
+            margin-bottom: 0.95rem;
+            font-size: 0.98rem;
+            line-height: 1.45;
+        }
+
+        .form-group {
+            margin-bottom: 0.95rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group h3,
+        .lab-info h2 {
+            margin-top: 0;
+            margin-bottom: 0.6rem;
+            color: var(--accent-yellow);
+            letter-spacing: 0.3px;
+        }
+
+        .form-group p,
+        .lab-info p {
+            color: var(--text-muted);
+            margin: 0.38rem 0;
+            font-size: 0.96rem;
+            line-height: 1.5;
+        }
+
+        .team-line {
+            color: #dfe8ff;
+            font-weight: 600;
+        }
+
+        .team-name {
+            color: var(--accent-yellow);
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(243, 238, 19, 0.28);
+        }
+
+        textarea[name="input"] {
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            margin-bottom: 0.85rem;
+            border: 1px solid #3e4a70;
+            border-radius: 8px;
+            background: #10172a;
+            color: var(--text-main);
+            outline: none;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+
+        textarea[name="input"]:focus {
+            border-color: var(--accent-violet);
+            box-shadow: 0 0 0 3px rgba(107, 53, 245, 0.22);
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(90deg, #5c2ddb 0%, #7547ff 100%);
+            color: #ffffff;
+            padding: 0.58rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            font-size: 0.94rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(107, 53, 245, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 0.75rem 1rem;
+            margin-top: 0;
+            background: #12182b;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-soft);
+            font-size: 0.92rem;
+        }
+
+        .lab-info {
+            background: linear-gradient(90deg, rgba(10, 119, 120, 0.24) 0%, rgba(10, 119, 120, 0.1) 100%);
+            border-left: 5px solid #13a3a3;
+            padding: 0.95rem;
+            margin-bottom: 0.95rem;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.75rem;
+            background: #121a2e;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .credits-table {
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.9rem;
+        }
+
+        .credits-section {
+            margin-bottom: 0.55rem;
+            padding: 0.72rem;
+        }
+
+        .credits-section h3 {
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
+        }
+
+        .credits-section .credits-table {
+            width: 82%;
+            margin-top: 0.45rem;
+            font-size: 0.82rem;
+        }
+
+        .credits-section th,
+        .credits-section td {
+            padding: 0.42rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .credits-section th {
+            font-size: 0.78rem;
+            letter-spacing: 0.3px;
+        }
+
+        th, td {
+            padding: 0.6rem 0.72rem;
+            border-bottom: 1px solid #293550;
+            text-align: left;
+        }
+
+        th {
+            background: linear-gradient(90deg, #646b79 0%, #838a99 100%);
+            color: #0b1020;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            font-size: 0.88rem;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tbody tr:hover {
+            background: rgba(243, 238, 19, 0.08);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                width: calc(100% - 1rem);
+                margin: 0.6rem auto;
+                padding: 0.85rem;
+            }
+
+            th, td {
+                font-size: 0.86rem;
+                padding: 0.5rem;
+            }
+
+            .credits-table {
+                width: 94%;
+            }
+
+            .credits-section {
+                padding: 0.65rem;
+            }
+
+            .credits-section .credits-table {
+                width: 90%;
+                font-size: 0.8rem;
+            }
+
+            .credits-section th,
+            .credits-section td {
+                padding: 0.4rem 0.44rem;
+                font-size: 0.78rem;
+            }
+
+            textarea[name="input"] {
+                min-height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="container">
+        <div class="lab-info">
+            <h2>Buffer Overflow - Server Crash DoS: Demo Environment</h2>
+            <p>Course: Cybersecurity-CSL6010</p>
+            <p>Purpose: Demonstration and analysis of buffer overflow vulnerabilities in a controlled environment</p>
+            <p class="team-line">Assignment Team: <span class="team-name">Group 17</span></p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Assignment Warning:</strong> This page is part of a Cybersecurity assignment focused on buffer overflow behavior.
+            Use only in the provided controlled setup. Excessive input/load can intentionally crash the service.
+        </div>
+
+        <div class="form-group">
+            <h3>Testing Buffer  Attack</h3>
+            <p>Enter text to test buffer overflow (buffer size is 10 characters):</p>
+            <form method="POST">
+                <textarea name="input" placeholder="Enter test string here..."></textarea>
+                <input type="submit" value="Run Test">
+            </form>
+        </div>
+
+        <div class="form-group credits-section">
+            <h3>Student Credits</h3>
+            <table class="credits-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chaurasia Kamalkumar Lallanprasad</td>
+                        <td>G25AIT2028</td>
+                    </tr>
+                    <tr>
+                        <td>Anurag Vishwakarma</td>
+                        <td>G25AIT2017</td>
+                    </tr>
+                    <tr>
+                        <td>Palagani Sai Chaitanya</td>
+                        <td>G25AIT2143</td>
+                    </tr>
+                    <tr>
+                        <td>Niketh Varma Tirumalaraju</td>
+                        <td>G25AIT2142</td>
+                    </tr>
+                    <tr>
+                        <td>Nalla Sai Revanth</td>
+                        <td>G25AIT2141</td>
+                    </tr>
+                    <tr>
+                        <td>Anmol Pandey</td>
+                        <td>G25AIT2013</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 IIT Jodhpur | PGDAI | Cohort 2
+    </div>
+</body>
+</html>
