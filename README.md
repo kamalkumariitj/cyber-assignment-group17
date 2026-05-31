@@ -4,35 +4,30 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 
 ## Credits
 
-Assignment Group 17
+**Assignment Group 17**
 
-- Chaurasia Kamalkumar Lallanprasad - G25AIT2028 -
-Understanding buffer overflow
-Why it happens?
-Basic understanding - Demo 1.0 
-Server attack DoS - Demo 4.0
+- **Chaurasia Kamalkumar Lallanprasad** — G25AIT2028
+  - Understanding buffer overflow & why it happens
+  - Basic understanding — Demo 1
+  - Server attack DoS — Demo 4
 
-- Anurag Vishwakarma - G25AIT2017 -
-Understanding buffer overflow
-Why it happens?
-Basic understanding - Demo 1.0 
-Server attack DoS - Demo 4.0
+- **Anurag Vishwakarma** — G25AIT2017
+  - Understanding buffer overflow & why it happens
+  - Basic understanding — Demo 1
+  - Server attack DoS — Demo 4
 
-- Anmol Pandey - G25AIT2013 -
-Remote code execution - Demo 3.0
+- **Anmol Pandey** — G25AIT2013
+  - Remote code execution — Demo 3
 
-- Palagani Sai Chaitanya - G25AIT2143 -
-Prevention/Countermeasures
-Case Study, Heartbleed Bug (OpenSSL)(2014)
+- **Palagani Sai Chaitanya** — G25AIT2143
+  - Prevention / Countermeasures
+  - Case Study: Heartbleed Bug (OpenSSL, 2014)
 
+- **Niketh Varma Tirumalaraju** — G25AIT2142
+  - Case Study: The Morris Worm (1998)
 
-- Niketh Varma Tirumalaraju - G25AIT2142 -
-Case Study- The Morris Worm (1998)
-
-- Nalla Sai Revanth - G25AIT2141 -
-Case Study, WannaCry Ransomeware(2017)
-
-
+- **Nalla Sai Revanth** — G25AIT2141
+  - Case Study: WannaCry Ransomware (2017)
 
 
 
@@ -42,8 +37,8 @@ Case Study, WannaCry Ransomeware(2017)
 |------|----------|-------|
 | demo1 | C++ | Safe vs unsafe buffer copy (`strcpy` / `strncpy`) |
 | demo2 | C | Stack variable overwrite + function pointer hijack via overflow + Gdb |
-| demo3 | Python / Flask | Web-layer overflow simulation, service crash & DoS behaviour |
-| demo4 | C + Python | Real TCP server exploit — overflow the stack, overwrite the return address, land in shellcode |
+| demo3 | C + Python | Real TCP server exploit — overflow the stack, overwrite the return address, land in shellcode |
+| demo4 | Python / Flask | Web-layer overflow simulation, service crash & DoS behaviour |
 
 This project is intended for a controlled classroom or lab environment only.
 
@@ -67,7 +62,7 @@ This project is intended for a controlled classroom or lab environment only.
 │   ├── server.c               # vulnerable TCP server (memcpy with no bounds check)
 │   ├── exploit.py             # builds and sends the 517-byte overflow payload
 │    ├── Makefile               # builds server with stack protector and NX disabled
-│    └── DEMO4_README.md        # standalone setup guide for the SEED Labs VM
+│    └── DEMO3_README.md        # standalone setup guide for the SEED Labs VM
 ├── demo4/
 │   ├── exploit/
 │   │   └── exploit.py         # drives the web demo from the command line
@@ -98,7 +93,7 @@ docker run -p 5000:5000 cyber-demo
 On startup the container will:
 1. Run **demo1** — safe and overflow cases for the C++ buffer demo
 2. Run **demo2** — builds and runs the stack variable overwrite and function pointer hijack demos
-3. Start the **demo3** Flask web app on `http://localhost:5000`
+3. Start the **demo4** Flask web app on `http://localhost:5000`
 
 > **demo4** requires a 32-bit SEED Labs Ubuntu VM and can't run inside the same docker container.
 
