@@ -17,8 +17,8 @@ COPY demo1/ /demo1/
 # Copy demo2 sources, GDB script, and build script
 COPY demo2/ /demo2/
 
-COPY demo3/web/app.py ./
-COPY demo3/web/templates ./templates
+COPY demo4/web/app.py ./
+COPY demo4/web/templates ./templates
 
 RUN chmod +x /demo2/scripts/build_and_run.sh
 
@@ -44,5 +44,6 @@ CMD ["/bin/bash", "-c", \
     echo '' && \
     echo '=== DEMO 2.3 GDB: Live Stack Variable Overwrite ===' && \
     gdb -batch -x /demo2/gdb_demo1_stack_overwrite.gdb /demo2/bin/01_overflow || true; \
-    echo '=== DEMO 3: Web Application: Open the http://localhost:5000/ to check demo3 ===' && \
+    echo '' && \
+    echo '=== DEMO 4: Web Application: Open the http://localhost:5000/ to check demo4 ===' && \
     python app.py"]
