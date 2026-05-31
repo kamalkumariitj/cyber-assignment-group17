@@ -26,7 +26,7 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
 | demo1 | C++ | Safe vs unsafe buffer copy (`strcpy` / `strncpy`) |
 | demo2 | C | Stack variable overwrite + function pointer hijack via overflow + Gdb |
 | demo3 | C + Python | Real TCP server exploit — overflow the stack, overwrite the return address, land in shellcode |
-| demo4 | Python / Flask | Web-layer overflow simulation, service crash & DoS behaviour |
+| demo4 | Python / Flask | Web-layer overflow simulation, server crash & DoS behaviour |
 
 This project is intended for a controlled classroom or lab environment only.
 
