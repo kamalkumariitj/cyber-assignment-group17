@@ -264,6 +264,14 @@ Then run the exploit script (app must be running):
 python3 demo4/exploit/exploit.py
 ```
 
+OR
+
+Use application  `http://localhost:5000`, and enter different type of input like 
+1. "HELLO" - Within limit
+2. "HELLOWORLD" - Extra char - Overflow scenario
+3. "HELLOWORLDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" - DoS Attack & Server Crash
+   
+
 The script sends:
 1. Normal, boundary, and oversized inputs to show overflow behaviour
 2. Concurrent requests to demonstrate service instability / DoS
