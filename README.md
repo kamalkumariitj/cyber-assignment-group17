@@ -12,9 +12,11 @@ An educational cybersecurity project demonstrating classic buffer overflow vulne
   - Server attack DoS — Demo 4
 
 - **Anurag Vishwakarma** — G25AIT2017
-  - Understanding buffer overflow & why it happens
-  - Basic understanding — Demo 1
-  - Server attack DoS — Demo 4
+  - **Anurag Vishwakarma** — G25AIT2017
+  - Unauthorized access - Demo 2.1
+  - Function pointer hijack - Demo 2.2
+  - GDB Debugger - Taking Program Control Demo2.3
+  
 
 - **Anmol Pandey** — G25AIT2013
   - Remote code execution — Demo 3
